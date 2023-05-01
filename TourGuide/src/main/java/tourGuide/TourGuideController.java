@@ -1,6 +1,7 @@
 package tourGuide;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +28,7 @@ public class TourGuideController {
     }
     
     @RequestMapping("/getLocation") 
-    public String getLocation(@RequestParam String userName) {
+    public String getLocation(@RequestParam String userName) throws InterruptedException, ExecutionException {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
@@ -42,13 +43,13 @@ public class TourGuideController {
         // The reward points for visiting each Attraction.
         //    Note: Attraction reward points can be gathered from RewardsCentral
     @RequestMapping("/getNearbyAttractions") 
-    public String getNearbyAttractions(@RequestParam String userName) {
+    public String getNearbyAttractions(@RequestParam String userName) throws InterruptedException, ExecutionException {
     	List<NearbyAttractionDTO> nearbyAttractionsList = tourGuideService
-    			.getNearByAttractions(userName);
+    			.getNearbyAttractions(userName);
     	return JsonStream.serialize(nearbyAttractionsList);
     }
     
-    @RequestMapping("/getRewards") 
+    @RequestMapping("/getRewards") // probleme de lenteur
     public String getRewards(@RequestParam String userName) {
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
     }
@@ -68,7 +69,7 @@ public class TourGuideController {
     }
     
     @RequestMapping("/getTripDeals")
-    public String getTripDeals(@RequestParam String userName) {
+    public String getTripDeals(@RequestParam String userName) throws InterruptedException, ExecutionException {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
     	return JsonStream.serialize(providers);
     }
